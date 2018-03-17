@@ -2,10 +2,16 @@ package dk.subbox.myapplication.activities.login.mvp;
 
 import android.util.Log;
 
+import java.sql.Time;
+import java.util.Timer;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+
+import javax.net.ssl.SSLException;
 
 import dk.subbox.myapplication.ext.LoginUser;
 import dk.subbox.myapplication.ext.SignUser;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -38,7 +44,8 @@ public class LoginPresenter {
         compositeDisposable.clear();
     }
 
-    private Disposable LoginButtonClickSub(){
+
+    /*private Disposable LoginButtonClickSub(){
         return view.ObservableLoginButton()
                 .doOnNext(__ -> view.showLoading(true))
                 .map(__ -> {return LoginUser.builder();})
@@ -58,6 +65,35 @@ public class LoginPresenter {
                 .retry()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(__ -> view.showLoading(false))
+                .subscribe();
+    }*/
+
+
+    private Disposable LoginButtonClickSub(){
+        Timer timer = new Timer();
+        return view.ObservableLoginButton()
+                .doOnNext(__ -> view.showLoading(true))
+                .map(__ -> {return LoginUser.builder();})
+                .doOnNext(user -> {
+                    if (view.getEditEmailText().isEmpty())
+                        view.setEditEmailError("This field cannot be empty");
+                    else
+                        user.setUsername(view.getEditEmailText());})
+                .doOnNext(user -> {
+                    if (view.getEditPasswordText().isEmpty())
+                        view.setEditPasswordError("This field cannot be empty");
+                    else
+                        user.setPassword(view.getEditPasswordText());})
+                .observeOn(Schedulers.io())
+                .doOnNext(user -> user.setDevice_name(model.getDeviceName()))
+                .map(user -> model.attemptLogin(user))
+                .retry(3)
+                //.toMultimap(response -> response.blockingLast().isSuccessful())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(error -> {view.setEditEmailError("Wrong Username or Password");
+                    Timber.e(error);})
+                .doOnNext(__ -> view.showLoading(false))
+                .doOnSubscribe(__ -> view.showLoading(false))
                 .subscribe();
     }
 

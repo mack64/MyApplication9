@@ -1,6 +1,7 @@
 package dk.subbox.myapplication.app.dagger.module;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.OkHttp3Downloader;
@@ -9,6 +10,7 @@ import java.io.File;
 
 import dagger.Module;
 import dagger.Provides;
+import dk.subbox.myapplication.R;
 import dk.subbox.myapplication.app.dagger.AppScope;
 import dk.subbox.myapplication.app.network.AuthNetwork;
 import okhttp3.Cache;
@@ -48,10 +50,10 @@ public class NetworkModule {
 
   @AppScope
   @Provides
-  public Retrofit retrofit(OkHttpClient okHttpClient, Gson gson) {
+  public Retrofit retrofit(OkHttpClient okHttpClient, Gson gson, Context context) {
     return new Retrofit.Builder()
         .client(okHttpClient)
-        .baseUrl("https://api.github.com/")
+        .baseUrl(context.getResources().getString(R.string.base_URL))
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build();
