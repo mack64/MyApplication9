@@ -1,6 +1,8 @@
 package dk.subbox.myapplication.ext;
 
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
@@ -12,18 +14,21 @@ import com.google.gson.annotations.SerializedName;
  */
 
 @AutoValue
-public abstract class LoginResponse {
+public abstract class LoginResponse implements Parcelable {
 
     public static TypeAdapter<LoginResponse> typeAdapter(Gson gson){
         return new AutoValue_LoginResponse.GsonTypeAdapter(gson);
     }
 
+    @Nullable
     @SerializedName("iss")
     public abstract String iss();
 
+    @Nullable
     @SerializedName("uid")
     public abstract String uid();
 
+    @Nullable
     @SerializedName("aud")
     public abstract String aud();
 
@@ -32,6 +37,10 @@ public abstract class LoginResponse {
 
     @SerializedName("nbf")
     public abstract int nbf();
+
+    public static LoginResponse create(String iss, String uid, String aud, int iat, int nbf){
+        return new AutoValue_LoginResponse(iss, uid, aud, iat, nbf);
+    }
 
     @AutoValue.Builder
     public abstract static class Builder {

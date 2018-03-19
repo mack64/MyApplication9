@@ -3,8 +3,11 @@ package dk.subbox.myapplication.app.network;
 import dk.subbox.myapplication.ext.LoginResponse;
 import dk.subbox.myapplication.ext.LoginUser;
 import io.reactivex.Observable;
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.http.Body;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 /**
@@ -14,6 +17,6 @@ import retrofit2.http.POST;
 public interface AuthNetwork {
 
     @POST("SignIn.php")
-    Observable<Response<LoginResponse>> LOGIN_USER_OBSERVABLE(@Body LoginUser user);
+    Observable<ResponseBody> LOGIN_USER_OBSERVABLE(@Body LoginUser user);
 
 }

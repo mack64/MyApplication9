@@ -1,6 +1,15 @@
 <resources>
     <string name="app_name">My Application</string>
-    <string name="base_URL">https://www.app.subbox.dk/android/</string>
-    <string name="base_URL_LOCAL">http://10.0.2.2:122/</string>
+    <string name="base_URL">https://www.subbox.dk/app/android/</string>
+    <string name="base_URL_LOCAL">http://10.0.2.2:122/one/</string>
+    <string name="title_activity_home_test">HomeTestActivity</string>
 
+    <string name="pubkey">
+MIIBHjANBgkqhkiG9w0BAQEFAAOCAQsAMIIBBgKB/gDqUNVHKIipvOqspyzAR8vl
+04zA19jMkX0nR0rGTaJ6NvKgGK/1spnu2UOWD3Brv2vH2ttTg/uojH+PdgBkbSBM
+IJekUzYn2hoNl+cYnlSST7rUoqRMzm/DtemRZ9orbfJAbbz9z/JLxtvc7a53fiSR
+HYs9IzOPype8k1Trb22dhU9gpvA1fsGRUTEsZalRmTMD8yfAsUv2mD0iS93/Rokd
+hZ5rvj0EJhLaTRM1UR/OYe83iU3hSOFkKCA1r8lFPSB/bBu/816VHl/jkK4zD8m6
+cUSSwQObwm24J2hg+gwKlLBnIAF44yJ36D8HUqAhShgy/9nvp5vg94zjGplvAgMB
+AAE=</string>
 </resources>
