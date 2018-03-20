@@ -55,7 +55,7 @@ public class LoginPresenter {
                 .doOnNext(user -> user.setDevice_name(model.getDeviceName()))
                 .observeOn(Schedulers.io())
                 .switchMap(user -> model.attemptLogin(user))
-                .map(reponseBodyToken -> Jwts.parser().setSigningKey(view.getContext().getResources().getString(R.string.pubkey)).parseClaimsJws(reponseBodyToken.string()))
+                .map(reponseBodyToken -> Jwts.parser().setSigningKey(model.getPublicKey()).parseClaimsJws(reponseBodyToken.string()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(error -> onConnectionError(error))
                 .doOnEach(__ -> view.showLoading(false))
