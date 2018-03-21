@@ -16,6 +16,7 @@ import retrofit2.http.POST;
 
 public interface AuthNetwork {
 
+    //@FormUrlEncoded
     @POST("SignIn.php")
     Observable<ResponseBody> LOGIN_USER_OBSERVABLE(@Body LoginUser user);
 

@@ -8,6 +8,8 @@ import javax.net.ssl.SSLPeerUnverifiedException;
 import dk.subbox.myapplication.R;
 import dk.subbox.myapplication.ext.LoginUser;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.PrematureJwtException;
+import io.jsonwebtoken.SignatureException;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -55,13 +57,17 @@ public class LoginPresenter {
                 .doOnNext(user -> user.setDevice_name(model.getDeviceName()))
                 .observeOn(Schedulers.io())
                 .switchMap(user -> model.attemptLogin(user))
-                .map(reponseBodyToken -> Jwts.parser().setSigningKey(model.getPublicKey()).parseClaimsJws(reponseBodyToken.string()))
+                .map(reponseBodyToken -> model.VerifyJWTTest2(reponseBodyToken.string()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(error -> onConnectionError(error))
                 .doOnEach(__ -> view.showLoading(false))
                 .retry()
                 .subscribe(data -> {model.startHomeActivity();});
     }
+
+    //TODO: save validated token.
+    //TODO: say which characters can be used; validate user input.
+    //TODO: What todo when there is an invalid token?
 
     private void onConnectionError(Throwable error){
         Timber.e(error);
@@ -71,6 +77,10 @@ public class LoginPresenter {
             view.wrongUsernameOrPasswordToast();
         }else if (error instanceof IllegalStateException) {
             view.UnsecureConnectionMessage();
+        }else if (error instanceof PrematureJwtException){
+            view.wrongUsernameOrPasswordToast();
+        }else if (error instanceof SignatureException){
+            view.wrongUsernameOrPasswordToast();
         }else {
             view.wrongUsernameOrPasswordToast();
         }
