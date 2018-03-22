@@ -16,6 +16,8 @@ import retrofit2.http.POST;
 
 public interface AuthNetwork {
 
+    //TODO: set form encoded header.
+    //TODO: set token bearer token header in php.
     //@FormUrlEncoded
     @POST("SignIn.php")
     Observable<ResponseBody> LOGIN_USER_OBSERVABLE(@Body LoginUser user);
