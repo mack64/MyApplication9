@@ -1,64 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context="dk.subbox.myapplication.activities.login.LoginActivity"
-    android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp">
+    android:background="@drawable/main_background_gradient"
+    tools:context="dk.subbox.myapplication.activities.login.LoginActivity">
 
-    <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/edit_email"
+    <FrameLayout
+        android:id="@+id/signup_fragment_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:padding="8dp"
-        android:inputType="textEmailAddress"
-        android:maxLines="1"
-        android:hint="Email"
-        android:background="@color/colorPrimary"
-        android:textColorHint="@color/colorAccent"
-        android:textColor="@color/colorWhite"
-        android:text="testuser12"
-        tools:ignore="HardcodedText" />
+        android:layout_height="match_parent"/>
 
-    <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/edit_password"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:layout_marginTop="10dp"
-        android:inputType="textPassword"
-        android:maxLines="1"
-        android:hint="Password"
-        android:background="@color/colorPrimary"
-        android:textColorHint="@color/colorAccent"
-        android:textColor="@color/colorWhite"
-        android:text="Password13!"
-        tools:ignore="HardcodedText" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        tools:context="dk.subbox.myapplication.activities.login.LoginActivity"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
 
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btn_login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="23dp"
-        android:text="LOGIN"
-        android:background="@color/subboxOrange"
-        android:textColor="@color/colorPrimaryDark"
-        tools:ignore="HardcodedText" />
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/edit_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:padding="8dp"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:hint="Email"
+            android:background="@color/subboxTextFieldColor"
+            android:textColorHint="@color/colorAccent"
+            android:textColor="@color/colorWhite"
+            android:text="testuser12"
+            tools:ignore="HardcodedText" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/edit_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:layout_marginTop="10dp"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:hint="Password"
+            android:background="@color/subboxTextFieldColor"
+            android:textColorHint="@color/colorAccent"
+            android:textColor="@color/colorWhite"
+            android:text="Password13!"
+            tools:ignore="HardcodedText" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23dp"
+            android:text="LOGIN"
+            android:background="@color/subboxOrange"
+            android:textColor="@color/colorPrimaryDark"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Forgot your password?"
+            android:textColor="@color/colorAccent"
+            android:textSize="12dp"
+            android:layout_marginTop="6dp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="20dp"
+            android:background="@color/colorTransparent">
+
+            <TextView
+                android:id="@+id/tvText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/colorTransparent"
+                android:text="OR"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:layout_toLeftOf="@id/tvText"
+                android:background="@color/subboxOrange"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16dp"
+                android:layout_toRightOf="@id/tvText"
+                android:background="@color/subboxOrange"
+                />
+
+        </RelativeLayout>
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/google_sign_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"/>
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/facebook_sign_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp" />
+
+    </LinearLayout>
+
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_goto_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:text="Not a member? Sign up now"
-        android:background="@color/colorTransparent"
-        android:textColor="@color/colorBlack"
-        tools:ignore="HardcodedText" />
+        android:text="Dont have an account? Sign up"
+        android:background="@drawable/main_background_gradient"
+        android:textColor="@color/colorWhite"
+        android:textAllCaps="false"
+        tools:ignore="HardcodedText"
+        android:layout_alignParentBottom="true"/>
 
-
-
-</LinearLayout>
+</RelativeLayout>

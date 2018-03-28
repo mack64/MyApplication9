@@ -1,7 +1,14 @@
 package dk.subbox.myapplication.activities.login.mvp;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
+
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.common.api.ApiException;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -12,6 +19,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import com.google.android.gms.tasks.Task;
 
 import dk.subbox.myapplication.activities.Hometest.HomeTestActivity;
 import dk.subbox.myapplication.app.network.AuthNetwork;
@@ -31,9 +39,12 @@ public class LoginModel {
     private final Activity activity;
     private final AuthNetwork authNetwork;
 
-    public LoginModel(Activity activity, AuthNetwork authNetwork){
+    private final GoogleSignInClient googleSignInClient;
+
+    public LoginModel(Activity activity, AuthNetwork authNetwork, GoogleSignInClient googleSignInClient){
         this.activity = activity;
         this.authNetwork = authNetwork;
+        this.googleSignInClient = googleSignInClient;
     }
 
     void startHomeActivity(){
@@ -73,6 +84,19 @@ public class LoginModel {
     }
 
 
+    @SuppressLint("RestrictedApi")
+    Intent getGoogleSignInIntent(){
+        return googleSignInClient.getSignInIntent();
+    }
 
+    void startGoogleActivityForResult(Intent intent){
+        activity.startActivityForResult(intent,200);
+    }
+
+    void handleSignInResult(com.google.android.gms.tasks.Task<GoogleSignInAccount> completedTask) throws ApiException {
+        GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+        Timber.i(account.getEmail());
+        // Signed in successfully, show authenticated UI.
+    }
 
 }

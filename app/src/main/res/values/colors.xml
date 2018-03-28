@@ -10,4 +10,7 @@
 
 
     <color name="subboxOrange">#FD912B</color>
+    <color name="subboxLightBackground">#1A242D</color>
+    <color name="subboxDarkBackground">#0E1718</color>
+    <color name="subboxTextFieldColor">#17242D</color>
 </resources>

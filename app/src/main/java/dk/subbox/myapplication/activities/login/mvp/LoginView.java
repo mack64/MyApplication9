@@ -10,6 +10,8 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.SignInButton;
 import com.jakewharton.rxbinding2.InitialValueObservable;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
@@ -40,6 +42,12 @@ public class LoginView extends FrameLayout {
     @BindView(R.id.btn_goto_register)
     Button ButtonGotoRegister;
 
+    @BindView(R.id.google_sign_in_button)
+    SignInButton ButtonGoogleLogin;
+
+    @BindView(R.id.facebook_sign_in_button)
+    Button ButtonFacebookLogin;
+
     private final ProgressDialog progressDialog = new ProgressDialog(getContext());
 
     public static void start(Context context, String... extras){
@@ -53,7 +61,8 @@ public class LoginView extends FrameLayout {
         inflate(activity, R.layout.activity_login,this);
 
         ButterKnife.bind(this);
-
+        ButtonGoogleLogin.setSize(SignInButton.SIZE_STANDARD);
+        ButtonGoogleLogin.setColorScheme(SignInButton.COLOR_DARK);
 
     }
 
@@ -67,7 +76,14 @@ public class LoginView extends FrameLayout {
 
     public Observable<Object> ObservableLoginButton() {return RxView.clicks(ButtonLogin);}
 
+    public Observable<Object> ObservervableGoogleLoginButton() {return RxView.clicks(ButtonGoogleLogin);}
+
+    public Observable<Object> ObservableFacebookLoginButton() {return RxView.clicks(ButtonFacebookLogin);}
+
     public Observable<Object> ObservableGotoRegisterButton() {return RxView.clicks(ButtonGotoRegister);}
+    public void setSignUpButtonText(String text){
+        ButtonGotoRegister.setText(text);
+    }
 
     public void UnsecureConnectionMessage(){
         Toast.makeText(getContext(),"You are on an unsecure connection",Toast.LENGTH_LONG).show();
@@ -76,6 +92,7 @@ public class LoginView extends FrameLayout {
     public void wrongUsernameOrPasswordToast(){
         Toast.makeText(getContext(),"Wrong username or password!",Toast.LENGTH_LONG).show();
     }
+
 
 
     public SignUser getUser(){
