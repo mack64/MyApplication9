@@ -19,6 +19,13 @@ public class HomeTestActivity extends AppCompatActivity {
         context.startActivity(intent);
     }
 
+    public static void start(Context context, Bundle bundle){
+        Intent intent = new Intent(context,HomeTestActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("account", bundle);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

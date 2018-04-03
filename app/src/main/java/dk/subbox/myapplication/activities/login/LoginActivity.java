@@ -48,11 +48,7 @@ public class LoginActivity extends FragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        try {
-            presenter.onActivityResult(requestCode,resultCode,data);
-        } catch (ApiException e) {
-            e.printStackTrace();
-        }
+        presenter.onActivityResult(requestCode,resultCode,data);
 
     }
 }

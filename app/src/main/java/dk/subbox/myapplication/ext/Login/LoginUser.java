@@ -1,13 +1,13 @@
-package dk.subbox.myapplication.ext;
+package dk.subbox.myapplication.ext.Login;
 
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.SerializedName;
+
 
 /**
  * Created by mmpa6 on 15-Mar-18.
@@ -17,7 +17,7 @@ import com.google.gson.annotations.SerializedName;
 public abstract class LoginUser implements Parcelable {
 
     public static TypeAdapter<LoginUser> typeAdapter(Gson gson){
-        return new AutoValue_LoginUser.GsonTypeAdapter(gson);
+        return new $AutoValue_LoginUser.GsonTypeAdapter(gson);
     }
 
     @SerializedName("username")

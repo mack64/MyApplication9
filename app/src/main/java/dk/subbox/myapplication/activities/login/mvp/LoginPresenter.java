@@ -2,9 +2,6 @@ package dk.subbox.myapplication.activities.login.mvp;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.text.Html;
-import android.view.View;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -20,20 +17,20 @@ import com.google.android.gms.tasks.Task;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLPeerUnverifiedException;
 
-import dk.subbox.myapplication.R;
-import dk.subbox.myapplication.ext.LoginUser;
-import io.jsonwebtoken.Jwts;
+import dk.subbox.myapplication.ext.Login.LoginUser;
+import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.PrematureJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Single;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
+import okhttp3.internal.http.HttpCodec;
 import retrofit2.HttpException;
+import retrofit2.Response;
 import timber.log.Timber;
 
 
@@ -52,8 +49,6 @@ public class LoginPresenter {
 
     public void onCreate(){
 
-
-        setSignUpButtonTextBold();
         compositeDisposable.add(LoginButtonClickSub());
         compositeDisposable.add(LoginGoogleButtonClickSub());
         FaceBookLoginSetup();
@@ -63,36 +58,34 @@ public class LoginPresenter {
         compositeDisposable.clear();
     }
 
-    @SuppressLint("RestrictedApi")
-    public void onActivityResult(int requestCode, int resultCode, Intent data) throws ApiException {
+    @SuppressLint({"RestrictedApi", "CheckResult"})
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+        //TODO: Google ResultCode ?!?!? find ud af hvad man gør her.
         if (requestCode == 200) {
             // The Task returned from this call is always completed, no need to attach
             // a listener.
 
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            model.handleSignInResult(task);
+            try {
+                Task<GoogleSignInAccount> googleSignInAccountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
+                //account = handleSignInResult(googleSignInAccountTask);
+                GoogleSignInAccount googleSignInAccount = handleSignInResult(googleSignInAccountTask);
+                Observable<ResponseBody> responseBodyObservable = Observable.just(googleSignInAccount)
+                        .observeOn(Schedulers.io())
+                        .switchMap(__ -> model.apiBackendVerification(googleSignInAccount.getIdToken()));
+                ResponseBody responseBody = responseBodyObservable.blockingSingle();
+                Jwt jwt = model.VerifyJWT(responseBody.string());
+            }catch (Exception ex){
+                onConnectionError(ex);
+            }
 
-          /*  Observable<Object> googleSigninObservable = Observable.create(new ObservableOnSubscribe<Object>() {
-                @Override
-                public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
-                    model.startHomeActivity();
-                }
-            });
-*/
-            /*googleSigninObservable
-                    .doOnError(error -> {view.wrongUsernameOrPasswordToast(); Timber.e(error);})
-                    .map(__ -> GoogleSignIn.getSignedInAccountFromIntent(data))
-                    .doOnNext(task -> model.handleSignInResult(task))
-                    .subscribe();
-        */
         }
     }
 
     private Disposable LoginButtonClickSub(){
         return view.ObservableLoginButton()
                 .doOnNext(__ -> view.showLoading(true))
-                .map(__ -> {return LoginUser.builder();})
+                .map(__ -> LoginUser.builder())
                 .doOnNext(user -> {
                     if (view.getEditEmailText().isEmpty())
                         view.setEditEmailError("This field cannot be empty");
@@ -106,19 +99,31 @@ public class LoginPresenter {
                 .doOnNext(user -> user.setDevice_name(model.getDeviceName()))
                 .observeOn(Schedulers.io())
                 .switchMap(user -> model.attemptLogin(user))
-                .map(reponseBodyToken -> model.VerifyJWTTest2(reponseBodyToken.string()))
+                .map(responseBodyToken -> model.VerifyJWT(responseBodyToken.string()))
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError(error -> onConnectionError(error))
+                .doOnError(this::onConnectionError)
                 .doOnEach(__ -> view.showLoading(false))
                 .retry()
                 .subscribe(data -> {model.startHomeActivity();});
     }
 
+
     private Disposable LoginGoogleButtonClickSub(){
         return view.ObservervableGoogleLoginButton()
                 .map(__ -> model.getGoogleSignInIntent())
                 .doOnNext(intent -> model.startGoogleActivityForResult(intent))
+                .doOnError(this::onConnectionError)
+                .retry()
                 .subscribe();
+    }
+
+    GoogleSignInAccount handleSignInResult(com.google.android.gms.tasks.Task<GoogleSignInAccount> completedTask) throws ApiException {
+        return completedTask.getResult(ApiException.class);
+    }
+
+    private void UpdateUI(GoogleSignInAccount googleSignInAccount){
+
+
     }
 
     //TODO: save validated token.
@@ -127,7 +132,7 @@ public class LoginPresenter {
 
     private void onConnectionError(Throwable error){
         Timber.e(error);
-        if (error instanceof SSLException || error instanceof SSLPeerUnverifiedException){
+        if (error instanceof SSLException){
             view.UnsecureConnectionMessage();
         }else if (error instanceof HttpException){
             view.wrongUsernameOrPasswordToast();
@@ -140,12 +145,13 @@ public class LoginPresenter {
         }else {
             view.wrongUsernameOrPasswordToast();
         }
-        Timber.e(error);
     }
 
-    private void setSignUpButtonTextBold(){
-        String text = "Dont have an account? <b>Sign up</b>";
-        view.setSignUpButtonText(Html.fromHtml(text).toString());
+    private void onApiError(Throwable error){
+        Timber.e(error);
+        if (error instanceof HttpException){
+
+        }
     }
 
     private void FaceBookLoginSetup(){

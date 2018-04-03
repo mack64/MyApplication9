@@ -24,6 +24,8 @@ public class ApiModule {
     GoogleSignInOptions googleSignInOptions(){
         return new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
+                .requestProfile()
+                .requestIdToken("28951304053-f840sn63j4qlf55id6j3lq7qlk4bts4k.apps.googleusercontent.com")
                 .build();
     }
 

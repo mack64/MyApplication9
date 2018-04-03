@@ -2,15 +2,11 @@ package dk.subbox.myapplication.app.dagger.module;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.jakewharton.rxbinding2.widget.RxAdapter;
 
 import dagger.Module;
 import dagger.Provides;
 import dk.subbox.myapplication.app.dagger.AppScope;
-import dk.subbox.myapplication.ext.LoginResponseAdapterFactory;
-import dk.subbox.myapplication.ext.LoginUserAdapterFactory;
-import retrofit2.Converter;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import dk.subbox.myapplication.ext.Login.LoginUserAdapterFactory;
 
 @Module
 public class GsonModule {

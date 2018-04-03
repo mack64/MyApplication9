@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.text.Html;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -61,8 +62,9 @@ public class LoginView extends FrameLayout {
         inflate(activity, R.layout.activity_login,this);
 
         ButterKnife.bind(this);
-        ButtonGoogleLogin.setSize(SignInButton.SIZE_STANDARD);
+        ButtonGoogleLogin.setSize(SignInButton.SIZE_WIDE);
         ButtonGoogleLogin.setColorScheme(SignInButton.COLOR_DARK);
+        setSignUpButtonTextBold();
 
     }
 
@@ -93,7 +95,10 @@ public class LoginView extends FrameLayout {
         Toast.makeText(getContext(),"Wrong username or password!",Toast.LENGTH_LONG).show();
     }
 
-
+    private void setSignUpButtonTextBold(){
+        String text = "Dont have an account? <b>Sign up</b>";
+        setSignUpButtonText(Html.fromHtml(text).toString());
+    }
 
     public SignUser getUser(){
         return SignUser.builder()
