@@ -70,7 +70,9 @@ public class NetworkModule {
 
         Response response = chain.proceed(request);
 
-        //Timber.i("Response Body: " + response.body().string());
+        //
+        Timber.i("Response Body: " + response.body().string());
+        //
 
         long t2 = System.nanoTime();
         Timber.i(String.format("Received response for %s in %.1fms%n%s",
