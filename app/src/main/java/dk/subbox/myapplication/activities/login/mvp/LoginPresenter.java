@@ -75,6 +75,9 @@ public class LoginPresenter {
                         .switchMap(__ -> model.apiBackendVerification(googleSignInAccount.getIdToken()));
                 ResponseBody responseBody = responseBodyObservable.blockingSingle();
                 Jwt jwt = model.VerifyJWT(responseBody.string());
+
+                model.startHomeActivity();
+
             }catch (Exception ex){
                 onConnectionError(ex);
             }

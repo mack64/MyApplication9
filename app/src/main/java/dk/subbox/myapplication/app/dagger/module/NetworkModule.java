@@ -38,7 +38,7 @@ public class NetworkModule {
 
   @AppScope
   @Provides
-  public OkHttpClient okHttpClient(Interceptor interceptor, Cache cache, CertificatePinner certificatePinner) {
+  public OkHttpClient okHttpClient(HttpLoggingInterceptor interceptor, Cache cache, CertificatePinner certificatePinner) {
     return new OkHttpClient.Builder()
         .addInterceptor(interceptor)
         .certificatePinner(certificatePinner)
@@ -89,7 +89,7 @@ public class NetworkModule {
   public HttpLoggingInterceptor httpLoggingInterceptor() {
     HttpLoggingInterceptor logging = new HttpLoggingInterceptor(
         message -> Timber.d(message));
-    return logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+    return logging.setLevel(HttpLoggingInterceptor.Level.BODY);
   }
 
   @AppScope

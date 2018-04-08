@@ -69,7 +69,7 @@ public class LoginModel {
     }
 
     Observable<ResponseBody> apiBackendVerification(String accessToken){
-        return authNetwork.API_LOGIN("Bearer " + accessToken);
+        return authNetwork.API_LOGIN("Bearer " + accessToken, getDeviceName());
     }
 
     Jwt VerifyJWT(String token) throws IOException, CertificateException, SignatureException, PrematureJwtException{

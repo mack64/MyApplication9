@@ -6,6 +6,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import retrofit2.http.Body;
 import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 /**
@@ -21,6 +22,6 @@ public interface AuthNetwork {
     Observable<ResponseBody> LOGIN_USER_OBSERVABLE(@Body LoginUser user);
 
     @POST("API_SignIn.php")
-    Observable<ResponseBody> API_LOGIN(@Header("Authorization") String accessToken);
+    Observable<ResponseBody> API_LOGIN(@Header("Authorization") String accessToken,@Body String device_name);
 
 }
