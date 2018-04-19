@@ -6,6 +6,7 @@
 
     <string name="facebook_app_id">197259894383486</string>
     <string name="fb_login_protocol_scheme">fb197259894383486</string>
+    <string name="fb_login_url">https://www.facebook.com/v2.12/dialog/oauth?client_id=789798581215726&amp;redirect_uri=https://subbox.dk/app/android/authCode.php&amp;state=facebook&amp;response_type=code&amp;scope=email,public_profile,user_birthday,user_hometown</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

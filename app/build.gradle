@@ -45,7 +45,8 @@ dependencies {
     annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
 
     implementation 'com.google.dagger:dagger-android:2.13'
-    implementation 'com.google.dagger:dagger-android-support:2.13' // if you use the support libraries
+    implementation 'com.google.dagger:dagger-android-support:2.13'
+    // if you use the support libraries
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.11'
 
     compileOnly 'com.google.auto.value:auto-value:1.5.2'

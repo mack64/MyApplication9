@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_background_gradient"
+    android:orientation="vertical"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="48dp"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_goto_register"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Dont have an account? Sign up"
+        android:background="@drawable/main_background_gradient"
+        android:textColor="@color/colorWhite"
+        android:textAllCaps="false"
+        tools:ignore="HardcodedText"
+        android:layout_alignParentTop="true"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_margin="20dp">
+
+        <!--
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/edit_firstname_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:padding="8dp"
+            android:inputType="textPersonName"
+            android:maxLines="1"
+            android:hint="Firstname"
+            android:background="@color/subboxTextFieldColor"
+            android:textColorHint="@color/colorAccent"
+            android:textColor="@color/colorWhite"
+            android:text="testuser12"
+            tools:ignore="HardcodedText" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/edit_lastname_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:padding="8dp"
+            android:inputType="textPersonName"
+            android:maxLines="1"
+            android:hint="Lastname"
+            android:background="@color/subboxTextFieldColor"
+            android:textColorHint="@color/colorAccent"
+            android:textColor="@color/colorWhite"
+            android:text="testuser12"
+            tools:ignore="HardcodedText" />
+        -->
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/edit_email_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:padding="8dp"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:hint="Email"
+            android:background="@color/subboxTextFieldColor"
+            android:textColorHint="@color/colorAccent"
+            android:textColor="@color/colorWhite"
+            android:text="testuser12"
+            tools:ignore="HardcodedText" />
+
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/edit_age_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:padding="8dp"
+            android:inputType="number"
+            android:maxLines="1"
+            android:hint="Age"
+            android:background="@color/subboxTextFieldColor"
+            android:textColorHint="@color/colorAccent"
+            android:textColor="@color/colorWhite"
+            android:text="testuser12"
+            tools:ignore="HardcodedText" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/edit_password_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:padding="8dp"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:hint="Password"
+            android:background="@color/subboxTextFieldColor"
+            android:textColorHint="@color/colorAccent"
+            android:textColor="@color/colorWhite"
+            android:text="testuser12"
+            tools:ignore="HardcodedText" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/edit_passwordagain_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:padding="8dp"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:hint="Password Again"
+            android:background="@color/subboxTextFieldColor"
+            android:textColorHint="@color/colorAccent"
+            android:textColor="@color/colorWhite"
+            android:text="testuser12"
+            tools:ignore="HardcodedText" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23dp"
+            android:text="LOGIN"
+            android:background="@color/subboxOrange"
+            android:textColor="@color/colorPrimaryDark"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+</RelativeLayout>

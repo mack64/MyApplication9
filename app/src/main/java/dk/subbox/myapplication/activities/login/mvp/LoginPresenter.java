@@ -2,43 +2,45 @@ package dk.subbox.myapplication.activities.login.mvp;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialogFragment;
+import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLPeerUnverifiedException;
+import java.security.Key;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.net.ssl.SSLException;
+
+import dk.subbox.myapplication.R;
+import dk.subbox.myapplication.activities.Hometest.HomeTestActivity;
+import dk.subbox.myapplication.activities.login.misc.SignUpBottomSheetBehavior;
 import dk.subbox.myapplication.ext.Login.LoginUser;
-import io.jsonwebtoken.Jwt;
+import dk.subbox.myapplication.ext.SignUser;
 import io.jsonwebtoken.PrematureJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.reactivex.Observable;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import okhttp3.internal.http.HttpCodec;
 import retrofit2.HttpException;
-import retrofit2.Response;
 import timber.log.Timber;
 
 
 public class LoginPresenter {
 
-    LoginView view;
+    private LoginView view;
 
-    LoginModel model;
+    private LoginModel model;
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -48,10 +50,13 @@ public class LoginPresenter {
     }
 
     public void onCreate(){
-
+        model.BottomSheetSetup(view.layoutBottomSheet);
+        model.setEditAgeDateListener(view.editAge);
+        model.PasswordErrorCheck("hi there man");
         compositeDisposable.add(LoginButtonClickSub());
         compositeDisposable.add(LoginGoogleButtonClickSub());
-        FaceBookLoginSetup();
+        compositeDisposable.add(FacebookLoginTestButtonClickSub());
+        compositeDisposable.add(GotoRegisterButtonClickSub());
     }
 
     public void onDestroy(){
@@ -63,25 +68,24 @@ public class LoginPresenter {
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
         //TODO: Google ResultCode ?!?!? find ud af hvad man gør her.
         if (requestCode == 200) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
-
+            // The Task returned from this call is always completed, no need to attach a listener.
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
-                Task<GoogleSignInAccount> googleSignInAccountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
-                //account = handleSignInResult(googleSignInAccountTask);
-                GoogleSignInAccount googleSignInAccount = handleSignInResult(googleSignInAccountTask);
-                Observable<ResponseBody> responseBodyObservable = Observable.just(googleSignInAccount)
+                Map<String,String> nameValuePairs = new HashMap<>();
+                ResponseBody googleLogin = Observable.just(task)
+                        .map(googleTask -> task.getResult(ApiException.class))
+                        .map(GoogleSignInAccount::getServerAuthCode)
+                        .doOnNext(authCode -> nameValuePairs.put("authCode",authCode))
+                        .doOnNext(__ -> nameValuePairs.put("provider","google"))
                         .observeOn(Schedulers.io())
-                        .switchMap(__ -> model.apiBackendVerification(googleSignInAccount.getIdToken()));
-                ResponseBody responseBody = responseBodyObservable.blockingSingle();
-                Jwt jwt = model.VerifyJWT(responseBody.string());
+                        .switchMap(__ -> model.GoogleBackendLogin(nameValuePairs))
+                        .blockingLast();
 
-                model.startHomeActivity();
+                Timber.i(googleLogin.string());
 
-            }catch (Exception ex){
-                onConnectionError(ex);
+            }catch (Exception e){
+                onApiError(e);
             }
-
         }
     }
 
@@ -110,7 +114,6 @@ public class LoginPresenter {
                 .subscribe(data -> {model.startHomeActivity();});
     }
 
-
     private Disposable LoginGoogleButtonClickSub(){
         return view.ObservervableGoogleLoginButton()
                 .map(__ -> model.getGoogleSignInIntent())
@@ -124,14 +127,50 @@ public class LoginPresenter {
         return completedTask.getResult(ApiException.class);
     }
 
-    private void UpdateUI(GoogleSignInAccount googleSignInAccount){
-
-
-    }
-
     //TODO: save validated token.
     //TODO: say which characters can be used; validate user input.
     //TODO: What todo when there is an invalid token?
+
+    private Disposable FacebookLoginTestButtonClickSub(){
+        //TODO: check if they are already logged in
+        return view.ObservableFacebookLoginTestButton()
+                .doOnNext(__ -> view.ShowWebViewContatiner())
+                .doOnNext(__ -> model.WebViewSetup(view.getWebView(),view.WebViewContainer))
+                .retry()
+                .subscribe();
+    }
+
+    private boolean sheetIsShown = false;
+    private Disposable GotoRegisterButtonClickSub(){
+        return view.ObservableGotoRegisterButton()
+                .doOnNext(__ -> {
+                    if (sheetIsShown){
+                        model.setStateBottomSheet(4);
+                        sheetIsShown = false;
+                    }else {
+                        model.setStateBottomSheet(3);
+                        sheetIsShown = true;
+                    }
+                })
+                .retry()
+                .subscribe();
+    }
+
+    private Disposable RegisterButton(){
+        return view.ObservableRegisterButton()
+                .map(__ -> (new HashMap<String,String>()))
+                .doOnNext(pairs -> pairs.put("name",""))
+                .doOnNext(pairs -> pairs.put("email",view.getEmail()))
+                .doOnNext(pairs -> pairs.put("password",view.getPassword()))
+                .doOnNext(pairs -> pairs.put("age",view.getAge()))
+                .doOnNext(pairs -> model.checkPairs(pairs))
+                .observeOn(Schedulers.io())
+                .switchMap(pairs -> model.SIGNUP_USER(pairs))
+                .doOnError(this::onConnectionError)
+                .retry()
+                .subscribe(__ -> model.startHomeActivity());
+
+    }
 
     private void onConnectionError(Throwable error){
         Timber.e(error);
@@ -154,36 +193,9 @@ public class LoginPresenter {
         Timber.e(error);
         if (error instanceof HttpException){
 
+        }else {
+
         }
     }
 
-    private void FaceBookLoginSetup(){
-
-        CallbackManager callbackManager = CallbackManager.Factory.create();
-
-        LoginManager.getInstance().registerCallback(callbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        // App code
-                        Timber.i("Success");
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        // App code
-                        Timber.i("Cancel");
-                    }
-
-                    @Override
-                    public void onError(FacebookException exception) {
-                        // App code
-                        Timber.i(exception);
-                    }
-                });
-    }
-
-    boolean isLoggedInFacebook(){
-        return AccessToken.getCurrentAccessToken() == null;
-    }
 }

@@ -7,6 +7,8 @@ import com.google.auto.value.AutoValue;
 import com.google.gson.annotations.SerializedName;
 
 import java.sql.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by mmpa6 on 14-Mar-18.
@@ -14,6 +16,7 @@ import java.sql.Date;
 @AutoValue
 public abstract class SignUser {
 
+    @Nullable
     @SerializedName("username")
     abstract String username();
 
@@ -47,7 +50,6 @@ public abstract class SignUser {
     @Nullable
     @SerializedName("zip_code")
     abstract String zip_code();
-
 
     @AutoValue.Builder
     public abstract static class Builder {

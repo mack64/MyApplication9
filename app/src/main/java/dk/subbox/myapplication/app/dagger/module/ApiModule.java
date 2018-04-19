@@ -7,6 +7,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.api.Scope;
 
 import dagger.Module;
 import dagger.Provides;
@@ -23,9 +25,10 @@ public class ApiModule {
     @AppScope
     GoogleSignInOptions googleSignInOptions(){
         return new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestServerAuthCode("28951304053-f840sn63j4qlf55id6j3lq7qlk4bts4k.apps.googleusercontent.com")
                 .requestEmail()
                 .requestProfile()
-                .requestIdToken("28951304053-f840sn63j4qlf55id6j3lq7qlk4bts4k.apps.googleusercontent.com")
+                .requestScopes(new Scope(Scopes.PLUS_ME))
                 .build();
     }
 

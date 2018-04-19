@@ -1,11 +1,11 @@
 package dk.subbox.myapplication.activities.login;
 
+import android.app.Fragment;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-import com.google.android.gms.common.api.ApiException;
+import android.support.v4.app.FragmentManager;
 
 import javax.inject.Inject;
 
@@ -14,7 +14,6 @@ import dk.subbox.myapplication.activities.login.dagger.LoginModule;
 import dk.subbox.myapplication.activities.login.mvp.LoginPresenter;
 import dk.subbox.myapplication.activities.login.mvp.LoginView;
 import dk.subbox.myapplication.app.network.AuthApplication;
-import dk.subbox.myapplication.app.network.AuthNetwork;
 
 public class LoginActivity extends FragmentActivity {
 
@@ -36,7 +35,7 @@ public class LoginActivity extends FragmentActivity {
         setContentView(view);
 
         presenter.onCreate();
-
+        view.supportFragmentManager = getSupportFragmentManager();
     }
 
     @Override
@@ -49,6 +48,15 @@ public class LoginActivity extends FragmentActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         presenter.onActivityResult(requestCode,resultCode,data);
+    }
 
+    @Override
+    public FragmentManager getSupportFragmentManager() {
+        return super.getSupportFragmentManager();
+    }
+
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
     }
 }

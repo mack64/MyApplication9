@@ -1,17 +1,21 @@
 package dk.subbox.myapplication.activities.login.mvp;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetDialog;
 import android.text.Html;
+import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.SignInButton;
 import com.jakewharton.rxbinding2.InitialValueObservable;
 import com.jakewharton.rxbinding2.view.RxView;
@@ -20,8 +24,10 @@ import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import dk.subbox.myapplication.R;
 import dk.subbox.myapplication.activities.login.LoginActivity;
+import dk.subbox.myapplication.activities.login.misc.SignUpBottomSheetDialogFragment;
 import dk.subbox.myapplication.ext.SignUser;
 import io.reactivex.Observable;
 
@@ -46,8 +52,53 @@ public class LoginView extends FrameLayout {
     @BindView(R.id.google_sign_in_button)
     SignInButton ButtonGoogleLogin;
 
-    @BindView(R.id.facebook_sign_in_button)
-    Button ButtonFacebookLogin;
+    @BindView(R.id.webview_frame)
+    FrameLayout WebViewContainer;
+
+    @BindView(R.id.webview)
+    WebView webView;
+
+    @BindView(R.id.facebook_login)
+    Button facebookLogin;
+
+    //FRAGMENT
+    @BindView(R.id.bottom_sheet)
+    RelativeLayout layoutBottomSheet;
+
+    @BindView(R.id.btn_register)
+    Button ButtonRegister;
+
+    @BindView(R.id.edit_age_register)
+    EditText editAge;
+
+    String getAge(){
+        return editAge.getText().toString();
+    }
+
+    @BindView(R.id.edit_email_register)
+    EditText editEmail;
+
+    String getEmail(){
+        return editEmail.getText().toString();
+    }
+
+    @BindView(R.id.edit_password_register)
+    EditText editPassword;
+
+    @BindView(R.id.edit_passwordagain_register)
+    EditText editPasswordAgain;
+
+    String getPassword(){
+        if (editPassword.getText().toString() ==
+                editPasswordAgain.getText().toString()){
+            return editPassword.getText().toString();
+        }else {
+            return null;
+        }
+    }
+
+
+    public android.support.v4.app.FragmentManager supportFragmentManager;
 
     private final ProgressDialog progressDialog = new ProgressDialog(getContext());
 
@@ -62,11 +113,33 @@ public class LoginView extends FrameLayout {
         inflate(activity, R.layout.activity_login,this);
 
         ButterKnife.bind(this);
+        //ButterKnife.bind(layoutBottomSheet);
         ButtonGoogleLogin.setSize(SignInButton.SIZE_WIDE);
         ButtonGoogleLogin.setColorScheme(SignInButton.COLOR_DARK);
         setSignUpButtonTextBold();
 
     }
+
+    public FrameLayout getWebViewContainer(){
+        return WebViewContainer;
+    }
+
+    public WebView getWebView(){
+        return webView;
+    }
+
+    public void ShowWebViewContatiner(){
+        WebViewContainer.setVisibility(VISIBLE);
+        WebViewContainer.bringToFront();
+        ButtonGotoRegister.setVisibility(GONE);
+    }
+
+    public void HideWebViewContatiner(){
+        WebViewContainer.setVisibility(GONE);
+        ButtonGotoRegister.setVisibility(VISIBLE);
+    }
+
+    public Observable<Object> ObservableFacebookLoginTestButton() {return RxView.clicks(facebookLogin);}
 
     public InitialValueObservable<CharSequence> ObservableEmailEdit() {return RxTextView.textChanges(EditEmail);}
     public String getEditEmailText(){return EditEmail.getText().toString();}
@@ -78,13 +151,17 @@ public class LoginView extends FrameLayout {
 
     public Observable<Object> ObservableLoginButton() {return RxView.clicks(ButtonLogin);}
 
-    public Observable<Object> ObservervableGoogleLoginButton() {return RxView.clicks(ButtonGoogleLogin);}
+    public Observable<Object> ObservableRegisterButton() {return RxView.clicks(ButtonRegister);}
 
-    public Observable<Object> ObservableFacebookLoginButton() {return RxView.clicks(ButtonFacebookLogin);}
+    public Observable<Object> ObservervableGoogleLoginButton() {return RxView.clicks(ButtonGoogleLogin);}
 
     public Observable<Object> ObservableGotoRegisterButton() {return RxView.clicks(ButtonGotoRegister);}
     public void setSignUpButtonText(String text){
         ButtonGotoRegister.setText(text);
+    }
+
+    public android.support.v4.app.FragmentManager getFragmentSupportManager(){
+        return supportFragmentManager;
     }
 
     public void UnsecureConnectionMessage(){
@@ -115,5 +192,22 @@ public class LoginView extends FrameLayout {
         }
     }
 
+    public void showBottomSheetDialog(Activity activity, int layoutId) {
+        View view = activity.getLayoutInflater().inflate(layoutId, null);
+
+        BottomSheetDialog dialog = new BottomSheetDialog(activity);
+        dialog.setContentView(view);
+        dialog.show();
+    }
+
+    /**
+     * showing bottom sheet dialog fragment
+     * same layout is used in both dialog and dialog fragment
+     */
+
+    public void showBottomSheetDialogFragment(LoginActivity activity, int layoutId) {
+        SignUpBottomSheetDialogFragment bottomSheetFragment = new SignUpBottomSheetDialogFragment();
+        bottomSheetFragment.show(activity.getSupportFragmentManager() , bottomSheetFragment.getTag());
+    }
 
 }
